@@ -10,10 +10,31 @@ const { frontmatter } = Astro.props;
   <NavigationBar pageType={PageType.Article} />
   <main>
     <h1>{frontmatter.title}</h1>
+    { (frontmatter.date_published && frontmatter.date_edited) ? 
+      <p>Published on <time datetime={frontmatter.date_published}>{frontmatter.date_published?.toLocaleDateString('en-CA')}</time>. Edited on <time datetime={frontmatter.date_edited}>{frontmatter.date_edited?.toLocaleDateString('en-CA')}</time></p>
+      :
+      <p>Published on <time datetime={frontmatter.date_published}>{frontmatter.date_published?.toLocaleDateString('en-CA')}</time></p>
+    }
+    <div class="title-spacer"/>
     <slot />
   </main>
   <div class="spacer"></div>
 </Layout>
+
+<style>
+  h1 {
+    margin-bottom: 0;
+  }
+
+  p {
+    /* margin-top: 0; */
+    font-size: 0.9rem;
+  }
+
+  .title-spacer {
+    height: 1.5rem;
+  }
+</style>
 
 <style lang="scss" is:global>
   main {

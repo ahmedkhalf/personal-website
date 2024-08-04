@@ -1,0 +1,105 @@
+---
+title: Discovering the Power of GPU Programming
+draft: true
+---
+
+As someone who has spent most of his time programming for CPUs, I always thought that GPU programming was some arcane art reserved for the most elite of programmers. As I’d later find out though, this couldn’t be further from the truth. It’s actually really easy to get started; And in this blog post, I will show how I used something called *fragment shaders* to speed up an old personal project by orders of magnitude. At the end of the article, I will also add some links for further exploration, which will be useful to my future self and may also be useful to you if you are interested in the subject.
+
+## The Need for Speed
+
+A couple of years back (during high school), I wrote an open-source project called Circle Evolution. It’s a program that, given an image as input, tries to draw that same image but only using circles. It does that by starting with a set of randomly sized, positioned, and colored circles. Then, iteration by iteration, “mutates“ those parameters (size, position, and color) to look more like the target image. How? Well, according to some (fitness) function, if that mutation makes the image look less like the target than the previous iteration, then that mutation is discarded, and the program continues.. Here is a video that showcases this:
+
+<YoutubeVideo src="https://www.youtube-nocookie.com/embed/mZm4kXZA5DQ?si=5HB7_NCUbRUR0DSL&rel=0&fs=0" />
+
+The way the fitness function works is by comparing every single pixel in the current image (made up of circles) to the target image (input to the program) and returning an error value representing how different the two images are. On every iteration, after the circle parameters are mutated, a new image needs to be drawn. Rendering the circles \- using OpenCV \- was easily the most time and CPU consuming part of the program. So why not offload some work to the GPU? And so my quest for a better alternative began...
+
+After some digging online, I learned that there are many ways to run code on the GPU. One method of doing that is using **shaders**, another way is using programming interfaces such as **CUDA**. Since I was already using Python, I was looking for a solution that would integrate well with minimal engineering effort. Unfortunately, CUDA uses C++ which meant a CPython [extension module](https://docs.python.org/3/extending/extending.html) would have been necessary. Furthermore, CUDA code only runs on a limited set of NVIDIA GPUs and I wanted my program to be runnable on most computers. Thus, CUDA was out of the equation...
+
+## Fragment Shaders to the Rescue\!
+
+[Fragment](https://en.wikipedia.org/wiki/Fragment\_(computer\_graphics)) shaders (aka pixel shaders) are a type of program that does computations per pixel. You can think of every single pixel to be rendered as occupying a single thread of execution in the GPU (though reality is a bit more nuanced). I write the fragment shaders in a domain-specific language called GLSL (OpenGL Shading Language). Python has some great OpenGL libraries which allows me to easily integrate the shader into my program with ease.
+
+You may find the rendering code below. This should be easy to read if you have experience with C-like languages. I’ve also included comments for more guidance.
+
+```glsl
+#version 400
+
+// data
+uniform int circleCount;   // number of circles
+uniform vec2 pos[256];     // position of the circles .xy (as 2d vector)
+uniform float radii[256];  // radius of the circles
+uniform vec4 colors[256];  // RGBA color of the circles (as 4d vector)
+uniform vec2 iResolution;  // resolution of the output image
+
+// helper function to draw a circle
+// uv: is the coordinate of the pixel being drawn
+// pos, rad, color: are all parameters of the circle being drawn
+vec4 circle(vec2 uv, vec2 pos, float rad, vec4 color)
+{
+   // a positive d value means uv lies outside the circle
+   float d = length(pos - uv) - rad;
+
+   // for smooth edges (aka antialiasing)
+   float t = clamp(d, 0.0, color.a);
+
+   return vec4(color.xyz, color.a - t);
+}
+
+// input: coordinate of fragment (aka pixel) normalized between 0 and 1
+in vec2 fragCoord;
+// output: color of fragment
+out vec4 fragColor;
+
+void main()
+{
+   // un-normalize the pixel coordinate
+   vec2 uv = fragCoord.xy * iResolution;
+
+   vec4 dest = vec4(0, 0, 0, 1);  // RGBA values, starts black
+
+   for (int i = 0; i < circleCount; i++)
+   {  
+      vec4 circ = circle(uv, pos[i], radii[i], colors[i]);  
+      dest = mix(dest, circ, circ.a);  
+   }
+
+   fragColor = dest;  
+}
+```
+
+Some important notes:
+
+* The `main()` function is the entry point of the program; It runs concurrently for every single pixel in the output image.  
+* Notice that I didn’t initialize the circle properties arrays (`pos`, `radii`, `colors`) with the size `circleCount`, but rather just set it to 256... This is because the shader compiler needs to know the size of the array ahead of time.  
+  * Since shaders are compiled at runtime, another solution to support an *arbitrary[^1]* number of circles is to just use string formatting/templating in Python.
+
+[^1]: There is a per GPU limit on how big the memory size of the uniforms can be. Although uniforms are the fastest way to read data, there are ways to get around this memory size limitation by using other [storage qualifiers](https://www.khronos.org/opengl/wiki/Type\_Qualifier\_(GLSL)\#Storage\_qualifier).  
+
+
+## Results
+
+<SubbedImage
+   src="/monalisacircles.png" alt="Mona Lisa Drawn With Circles" width={384} height={384}
+   sub="Mona Lisa drawn using 256 circles after 1 million iterations in ~18 minutes"
+/>
+
+Average render time per iteration (for a 256x256 image at 10k iterations) with an RTX A4000 GPU, an Intel(R) Xeon(R) W-1390P @ 3.50GHz w/ 8 cores, and 62 gigs of ram (university computer lab setup):
+
+* `Old: 0.011748 ms`  
+* `New: 0.000818 ms`
+
+That’s 2 orders of magnitude faster\!
+
+**Aside:** The old rendering code only supported grayscale images and would be slower if it had feature parity with the new renderer\!
+
+## Useful Resources
+
+* Good intro tutorial to shader programming: [https://www.youtube.com/watch?v=f4s1h2YETNY](https://www.youtube.com/watch?v=f4s1h2YETNY)  
+* Playground to build (and share\!) shaders in: [https://www.shadertoy.com/](https://www.shadertoy.com/)  
+* API reference for all GLSL functions: [https://registry.khronos.org/OpenGL-Refpages/gl4/html/](https://registry.khronos.org/OpenGL-Refpages/gl4/html/)
+
+## Further Exploration
+
+* Recall that the fitness function is used to compare the circle image (pixel by pixel) to the target image to check how similar it is. Right now the fitness function is still CPU bound. In the future I might look into ways of optimizing this function. Perhaps also offload the work to the GPU.  
+* Interfacing with C/C++ libraries such as OpenGL and Numpy as CPython bindings introduces additional call and serialization overhead. What if I rewrote this program in C/C++?  
+* I’d also like to learn CUDA, this website looks like a good starting point: [https://developer.nvidia.com/cuda-zone](https://developer.nvidia.com/cuda-zone)
