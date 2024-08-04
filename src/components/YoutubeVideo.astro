@@ -1,0 +1,13 @@
+---
+interface Props {
+	src: string;
+}
+
+const { src } = Astro.props;
+---
+
+<div class="big-container">
+  <div class="iframe-container">
+    <iframe src={src} title="YouTube video player" frameborder="0" allow="encrypted-media; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+  </div>
+</div>

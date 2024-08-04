@@ -1,0 +1,27 @@
+---
+import { Image } from "astro:assets";
+
+interface Props {
+	src: string;
+  alt: string;
+  width: number;
+  height: number;
+  sub: string;
+}
+
+const { src, alt, width, height, sub } = Astro.props;
+---
+
+<div class="big-container">
+  <Image src={src} alt={alt} width={width} height={height} style=`max-width: ${width};` /> 
+  <sub>{sub}</sub>
+</div>
+
+<style>
+  sub {
+    display: block;
+    text-align: center;
+    margin: 1.1rem 0 2rem 0;
+  }
+</style>
+

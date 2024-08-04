@@ -1,0 +1,100 @@
+---
+import NavigationBar from "../components/NavigationBar.astro";
+import { PageType } from "../components/NavigationBar.astro";
+import Layout from "../layouts/BaseLayout.astro";
+
+const { frontmatter } = Astro.props;
+---
+
+<Layout title={frontmatter.title}>
+  <NavigationBar pageType={PageType.Article} />
+  <main>
+    <h1>{frontmatter.title}</h1>
+    <slot />
+  </main>
+  <div class="spacer"></div>
+</Layout>
+
+<style lang="scss" is:global>
+  main {
+    margin: 0 1rem;
+  }
+
+  p {
+    text-align: justify;
+  }
+
+  %container {
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 40rem;
+  }
+
+  %big-container {
+    margin: 0 auto;
+    max-width: 50rem;
+  }
+
+  .footnotes {
+    @extend %container;
+  }
+
+  .big-container {
+    @extend %big-container;
+
+    iframe {
+      aspect-ratio: 16 / 9;
+      width: 100%;
+      max-width: 50rem;
+    }
+
+    .iframe-container {
+      border-radius: 8px;
+      overflow: hidden;
+      aspect-ratio: 16 / 9;
+      width: 100%;
+      max-width: 50rem;
+    }
+
+    img {
+      display: block;
+      border-radius: 8px;
+      margin: 0 auto;
+    }
+  }
+
+  .astro-code {
+    @extend %big-container;
+
+    border-radius: 8px;
+    padding: 0.5rem;
+    font-size: 1rem;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @extend %container;
+
+    font-weight: bold;
+  }
+
+  p, ul, ol {
+    @extend %container;
+    box-sizing: border-box;
+  }
+
+  sup {
+    line-height: 0;
+  }
+
+  .spacer {
+    height: 75vh;
+  }
+
+  code:not(pre > code) {
+    color: #3fb950;
+    background-color: #24292e;
+    padding: 2px 4px;
+    border-radius: 3px;
+  }
+
+</style>

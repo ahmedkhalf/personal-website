@@ -1,0 +1,15 @@
+---
+import Layout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import createSlug from '../../lib/createSlug';
+import NavigationBar, { PageType } from '../../components/NavigationBar.astro';
+
+const blogEntries = await getCollection('blog', entry => (import.meta.env.DEV || !entry.data.draft));
+---
+
+<Layout title='Blog Posts'>
+    <NavigationBar pageType={PageType.Posts} />
+    {blogEntries.map(async entry => {
+        return <a href={`/posts/${createSlug(entry.data.title)}`}>{entry.data.title}</a>;
+    })}
+</Layout>

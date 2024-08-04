@@ -1,0 +1,53 @@
+---
+export enum PageType {
+  Home,
+  Posts,
+  Article
+}
+
+interface Props {
+  pageType: PageType
+}
+
+const { pageType } = Astro.props;
+---
+
+<nav>
+  <div class="nav-contents">
+    {pageType === PageType.Home && <a class="gray">Home</a>}
+    {(pageType === PageType.Posts || pageType === PageType.Article) && <a href="/">Home</a>}
+    {pageType === PageType.Article && (<span>&gt;</span><a href="/posts">Posts</a>)}
+  </div>
+</nav>
+
+<style lang="scss">
+  nav {
+    background-color: #1c1b22;
+    padding: 0.25rem 1rem;
+    border-width: 0 0 2px 0;
+    border-style: solid;
+  }
+
+  %big-container {
+    margin: 0 auto;
+    max-width: 50rem;
+  }
+
+  .nav-contents {
+    @extend %big-container;
+  }
+
+  a, span {
+    margin-right: 0.25rem;
+  }
+
+  a, a:visited {
+    color: #8c8cff;
+  }
+
+  .gray {
+    color: gray;
+  }
+
+
+</style>

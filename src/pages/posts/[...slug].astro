@@ -1,0 +1,23 @@
+---
+import YoutubeVideo from '../../components/YoutubeVideo.astro';
+import SubbedImage from '../../components/SubbedImage.astro';
+
+import Layout from '../../layouts/PostLayout.astro';
+import { getCollection } from 'astro:content';
+import createSlug from '../../lib/createSlug';
+
+export async function getStaticPaths() {
+    const blogEntries = await getCollection('blog', entry => (import.meta.env.DEV || !entry.data.draft));
+    return blogEntries
+        .map(entry => ({
+            params: { slug: createSlug(entry.data.title) }, props: { entry },
+        }));
+}
+
+const { entry } = Astro.props;
+const { Content } = await entry.render();
+---
+
+<Layout frontmatter={entry.data}>
+    <Content components={{YoutubeVideo, SubbedImage}} />
+</Layout>
