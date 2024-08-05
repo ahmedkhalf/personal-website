@@ -9,6 +9,12 @@ export default defineConfig({
   site: 'https://khalf.ca',
   integrations: [
     mdx({
+      shikiConfig: {
+        themes: {
+          light: 'github-light',
+          dark: 'github-dark',
+        },
+      },
       rehypePlugins: [
         rehypeSlug,
         rehypeAutolinkHeadings

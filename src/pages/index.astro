@@ -3,30 +3,42 @@ import NavigationBar, { PageType } from '../components/NavigationBar.astro';
 import Layout from '../layouts/BaseLayout.astro';
 
 import createSlug from '../lib/createSlug';
-import { getCollection } from 'astro:content';
+import getBlogEntries from '../lib/getBlogEntries';
+import formatDateSmall from '../lib/formatDateSmall';
 
-const blogEntries = await getCollection('blog', entry => (import.meta.env.DEV || !entry.data.draft));
+const blogEntries = await getBlogEntries();
 ---
 
-<Layout title="Welcome to Astro.">
+<Layout title="Ahmed Khalf">
   <NavigationBar pageType={PageType.Home} />
 	<main>
-		<h1>Ahmed Khalf</h1>
-		<h2>Blog</h2>
-    <table>
-      <tbody>
-        {blogEntries.map(async entry => {
-          return (<tr><td>{entry.data.date_published?.toLocaleDateString('en-CA') + ':'}</td><td><a href={`/posts/${createSlug(entry.data.title)}`}>{entry.data.title}</a></td></tr>);
-        })}
-      </tbody>
-    </table>
+    <div class="container">
+      <h1>Ahmed Khalf</h1>
+      <h2>Blog</h2>
+      <table>
+        <tbody>
+          {blogEntries.map(async entry => {
+            return (<tr><td class="date">{entry.data.date_published && formatDateSmall(entry.data.date_published)}:</td><td><a href={`/posts/${createSlug(entry.data.title)}`}>{entry.data.title}</a></td></tr>);
+          })}
+        </tbody>
+      </table>
+    </div>
 	</main>
 </Layout>
 
 <style>
-	main {
-    margin-left: auto;
-    margin-right: auto;
+  main {
+    margin: 0 1rem;
+  }
+
+	.container {
+    margin: 0 auto;
     max-width: 40rem;
 	}
+
+  .date {
+    vertical-align: top;
+    padding-right: 0.5rem;
+    padding-left: 0;
+  }
 </style>

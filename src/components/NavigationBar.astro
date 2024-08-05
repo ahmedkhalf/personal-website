@@ -22,7 +22,7 @@ const { pageType } = Astro.props;
 
 <style lang="scss">
   nav {
-    background-color: #1c1b22;
+    background-color: #eaeaea;
     padding: 0.25rem 1rem;
     border-width: 0 0 2px 0;
     border-style: solid;
@@ -42,12 +42,20 @@ const { pageType } = Astro.props;
   }
 
   a, a:visited {
-    color: #8c8cff;
+    color: #0000ee;
   }
 
   .gray {
     color: gray;
   }
 
+  @media (prefers-color-scheme: dark) {
+    nav {
+      background-color: #1c1b22;
+    }
 
+    a, a:visited {
+      color: #8c8cff;
+    }
+  }
 </style>

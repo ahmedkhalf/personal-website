@@ -10,10 +10,9 @@ const { title } = Astro.props;
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
-		<meta name="description" content="Astro description" />
 		<meta name="viewport" content="width=device-width" />
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" type="image/x-icon" href="/favicon.ico" />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
 	</head>
@@ -30,12 +29,32 @@ const { title } = Astro.props;
 		margin: 0;
 		line-height: 1.5;
 		font-size: 1.1rem;
+
+    color: #333333;
 	}
 
 	html {
 		font-family: system-ui, sans-serif;
-		background: #13151a;
+    background: #F9F9F9;
 	}
+
+  @media (prefers-color-scheme: dark) {
+    body {
+		  color: #e0e0e0;
+    }
+
+    html {
+      background: #13151a;
+    }
+
+    a {
+      color: #8c8cff;
+    }
+
+    a:visited {
+      color: #ffadff;
+    }
+  }
 
 	code {
 		font-family:

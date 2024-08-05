@@ -3,6 +3,8 @@ import NavigationBar from "../components/NavigationBar.astro";
 import { PageType } from "../components/NavigationBar.astro";
 import Layout from "../layouts/BaseLayout.astro";
 
+import formatDateSmall from "../lib/formatDateSmall";
+
 const { frontmatter } = Astro.props;
 ---
 
@@ -11,9 +13,9 @@ const { frontmatter } = Astro.props;
   <main>
     <h1>{frontmatter.title}</h1>
     { (frontmatter.date_published && frontmatter.date_edited) ? 
-      <p>Published on <time datetime={frontmatter.date_published}>{frontmatter.date_published?.toLocaleDateString('en-CA')}</time>. Edited on <time datetime={frontmatter.date_edited}>{frontmatter.date_edited?.toLocaleDateString('en-CA')}</time></p>
+      <p>Published on <time datetime={frontmatter.date_published}>{formatDateSmall(frontmatter.date_published)}</time>. Edited on <time datetime={frontmatter.date_edited}>{formatDateSmall(frontmatter.date_edited)}</time>.</p>
       :
-      <p>Published on <time datetime={frontmatter.date_published}>{frontmatter.date_published?.toLocaleDateString('en-CA')}</time></p>
+      <p>Published on <time datetime={frontmatter.date_published}>{frontmatter.date_published && formatDateSmall(frontmatter.date_published)}</time>.</p>
     }
     <div class="title-spacer"/>
     <slot />
@@ -103,6 +105,20 @@ const { frontmatter } = Astro.props;
     box-sizing: border-box;
   }
 
+  blockquote {
+    @extend %container;
+
+    border-radius: 8px;
+    background: #ffffff;
+    
+    box-sizing: border-box;
+    padding: 0.5rem 1rem;
+
+    p {
+      margin: 0;
+    }
+  }
+
   sup {
     line-height: 0;
   }
@@ -112,10 +128,30 @@ const { frontmatter } = Astro.props;
   }
 
   code:not(pre > code) {
-    color: #3fb950;
-    background-color: #24292e;
+    color: #22863a;
+    background-color: #EDF7ED;
     padding: 2px 4px;
     border-radius: 3px;
   }
 
+
+  @media (prefers-color-scheme: dark) {
+    .astro-code, .astro-code span {
+      color: var(--shiki-dark) !important;
+      background-color: var(--shiki-dark-bg) !important;
+      /* Optional, if you also want font styles */
+      font-style: var(--shiki-dark-font-style) !important;
+      font-weight: var(--shiki-dark-font-weight) !important;
+      text-decoration: var(--shiki-dark-text-decoration) !important;
+    }
+
+    code:not(pre > code) {
+      color: #3fb950;
+      background-color: #24292e;
+    }
+
+    blockquote {
+      background: #24292e;
+    }
+  }
 </style>

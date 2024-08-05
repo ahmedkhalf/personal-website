@@ -1,15 +1,43 @@
 ---
 import Layout from '../../layouts/BaseLayout.astro';
-import { getCollection } from 'astro:content';
 import createSlug from '../../lib/createSlug';
+import formatDate from '../../lib/formatDate';
+import getBlogEntries from '../../lib/getBlogEntries';
 import NavigationBar, { PageType } from '../../components/NavigationBar.astro';
 
-const blogEntries = await getCollection('blog', entry => (import.meta.env.DEV || !entry.data.draft));
+const blogEntries = await getBlogEntries();
 ---
 
 <Layout title='Blog Posts'>
-    <NavigationBar pageType={PageType.Posts} />
-    {blogEntries.map(async entry => {
-        return <a href={`/posts/${createSlug(entry.data.title)}`}>{entry.data.title}</a>;
-    })}
+  <NavigationBar pageType={PageType.Posts} />
+  <main>
+    <div class="container">
+      <h1>Posts</h1>
+      {blogEntries.map(async entry => {
+        return <a href={`/posts/${createSlug(entry.data.title)}`}>
+          <h2>{entry.data.title}</h2>
+          <p set:html={entry.data.date_published && formatDate(entry.data.date_published)} />
+        </a>;
+      })}
+    </div>
+  </main>
 </Layout>
+
+<style>
+  main {
+    margin: 0 1rem;
+  }
+  
+  h2 {
+    margin-bottom: 0;
+  }
+
+  p {
+    margin-top: 0;
+  }
+
+	.container {
+    margin: 0 auto;
+    max-width: 40rem;
+  }
+</style>
