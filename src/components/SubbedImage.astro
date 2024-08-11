@@ -13,7 +13,7 @@ const { src, alt, width, height, sub } = Astro.props;
 ---
 
 <div class="big-container">
-  <Image src={src} alt={alt} width={width} height={height} style=`max-width: ${width};` /> 
+  <Image src={src} alt={alt} width={width} height={height} style=`max-width: ${width}px; width: 100%; height: auto;` /> 
   <sub>{sub}</sub>
 </div>
 
