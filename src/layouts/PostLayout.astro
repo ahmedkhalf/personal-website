@@ -20,7 +20,6 @@ const { frontmatter } = Astro.props;
     <div class="title-spacer"/>
     <slot />
   </main>
-  <div class="spacer"></div>
 </Layout>
 
 <style>
@@ -121,10 +120,6 @@ const { frontmatter } = Astro.props;
 
   sup {
     line-height: 0;
-  }
-
-  .spacer {
-    height: 75vh;
   }
 
   code:not(pre > code) {
