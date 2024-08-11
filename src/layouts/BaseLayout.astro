@@ -13,6 +13,7 @@ const { title } = Astro.props;
 		<meta name="viewport" content="width=device-width" />
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 		<link rel="icon" type="image/x-icon" href="/favicon.ico" />
+		<link rel="alternate" type="application/rss+xml" title="Ahmed's Blog Web Feed" href={new URL("rss.xml", Astro.site)} />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
 	</head>

@@ -17,6 +17,7 @@ const { pageType } = Astro.props;
     {pageType === PageType.Home && <a class="gray">Home</a>}
     {(pageType === PageType.Posts || pageType === PageType.Article) && <a href="/">Home</a>}
     {pageType === PageType.Article && (<span>&gt;</span><a href="/posts">Posts</a>)}
+    <a class="right" href="/rss.xml">RSS</a>
   </div>
 </nav>
 
@@ -47,6 +48,10 @@ const { pageType } = Astro.props;
 
   .gray {
     color: gray;
+  }
+
+  .right {
+    float: right;
   }
 
   @media (prefers-color-scheme: dark) {
