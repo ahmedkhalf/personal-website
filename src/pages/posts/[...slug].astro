@@ -10,7 +10,7 @@ export async function getStaticPaths() {
     const blogEntries = await getBlogEntries();
     return blogEntries
         .map(entry => ({
-            params: { slug: createSlug(entry.data.title) }, props: { entry },
+            params: { slug: createSlug(entry.data.permatitle ?? entry.data.title) }, props: { entry },
         }));
 }
 

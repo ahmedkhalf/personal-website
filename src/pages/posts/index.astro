@@ -14,7 +14,7 @@ const blogEntries = await getBlogEntries();
     <div class="container">
       <h1>Posts</h1>
       {blogEntries.map(async entry => {
-        return <a href={`/posts/${createSlug(entry.data.title)}`}>
+        return <a href={`/posts/${createSlug(entry.data.permatitle ?? entry.data.title)}`}>
           <h2>{entry.data.title}</h2>
           <p set:html={entry.data.date_published && formatDate(entry.data.date_published)} />
         </a>;

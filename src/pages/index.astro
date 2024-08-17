@@ -104,7 +104,7 @@ const blogEntries = await getBlogEntries();
       <table>
         <tbody>
           {blogEntries.map(async entry => {
-            return (<tr><td class="left">{entry.data.date_published && formatDateSmall(entry.data.date_published)}:</td><td><a href={`/posts/${createSlug(entry.data.title)}`}>{entry.data.title}</a></td></tr>);
+            return (<tr><td class="left">{entry.data.date_published && formatDateSmall(entry.data.date_published)}:</td><td><a href={`/posts/${createSlug(entry.data.permatitle ?? entry.data.title)}`}>{entry.data.title}</a></td></tr>);
           })}
         </tbody>
       </table>
