@@ -6,6 +6,9 @@ import createSlug from '../lib/createSlug';
 import getBlogEntries from '../lib/getBlogEntries';
 import formatDateSmall from '../lib/formatDateSmall';
 
+import { Image } from 'astro:assets';
+import ahmedKhalfChessImage from '../assets/ahmedkhalfchess.png';
+
 interface RepoInfo {
   name: string,
   description: string | null,
@@ -126,13 +129,19 @@ const blogEntries = await getBlogEntries();
       </table>
 
       <h2>Chess</h2>
-      <p>As a national chess arbiter (NA) I've arbitered over 10+ tournaments, most notably, the Canadian Open 2024.</p>
-      <ul>
-        <li><a href="https://www.chess.ca/en/ratings/p/?id=185035">CFC Profile</a></li>
-        <li><a href="https://ratings.fide.com/profile/2658470">FIDE Profile</a></li>
-      </ul>
-      
-    </div>
+      <div class="row">
+        <div class="column">
+          <p>As a national chess arbiter (NA) I've arbitered over 10+ tournaments, most notably, the Canadian Open 2024.</p>
+          <ul>
+            <li><a href="https://www.chess.ca/en/ratings/p/?id=185035">CFC Profile</a></li>
+            <li><a href="https://ratings.fide.com/profile/2658470">FIDE Profile</a></li>
+          </ul>
+        </div>
+        <div class="column">
+          <Image class="chess-image" src={ahmedKhalfChessImage} alt="Image of Ahmed Khalf playing chess." />
+        </div>
+      </div>
+
 	</main>
 </Layout>
 
@@ -182,5 +191,28 @@ const blogEntries = await getBlogEntries();
 
   .projects tr {
     padding-bottom: 1rem;
+  }
+
+  .row {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap-reverse;
+  }
+
+  .column {
+    flex: 1;
+    min-width: 256px;
+  }
+
+  .chess-image {
+    min-width: 256px;
+    width: 100%;
+    height: auto;
+
+    border-radius: 8px;
+
+    border-top: 1px solid rgba(255, 255, 255, 0.1); /* Faint top border */
+    border-bottom: 1px solid rgba(0, 0, 0, 0.5); /* Faint bottom border */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow */
   }
 </style>
