@@ -5,15 +5,16 @@ interface Props {
 	src: string;
   alt: string;
   width: number;
+  max_width: number;
   height: number;
   sub: string;
 }
 
-const { src, alt, width, height, sub } = Astro.props;
+const { src, alt, width, height, max_width, sub } = Astro.props;
 ---
 
 <div class="big-container">
-  <Image src={src} alt={alt} width={width} height={height} style=`max-width: ${width}px; width: 100%; height: auto;` /> 
+  <Image src={src} alt={alt} width={width} height={height} style=`max-width: ${max_width}px; width: 100%; height: auto;` /> 
   <sub>{sub}</sub>
 </div>
 
