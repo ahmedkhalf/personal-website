@@ -129,6 +129,17 @@ const { frontmatter } = Astro.props;
     border-radius: 3px;
   }
 
+  /* TEMP SOLUTION, ref https://css-tricks.com/better-line-breaks-for-long-urls/ */
+  a {
+    /* These are technically the same, but use both */
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+  
+    word-break: break-word;
+  
+    /* Adds a hyphen where the word breaks, if supported (No Blink) */
+    hyphens: auto;
+  }
 
   @media (prefers-color-scheme: dark) {
     .astro-code, .astro-code span {
