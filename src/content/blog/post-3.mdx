@@ -1,0 +1,42 @@
+---
+title: "Sneak Peak: Mona Lisa Drawn using 512 Circles"
+permatitle: Mona Lisa Drawn using 512 Circles
+date_published: 2024-10-18
+---
+
+import monalisa from '../../assets/post-3/out.svg'
+import monalisa_old from '../../assets/post-2/monalisacircles.png'
+
+This is my final semester at the University of Toronto where I'm currently
+taking a Neural Networks and Deep Learning course taught by [Prof. Collin Raffel](https://colinraffel.com/).
+Taking the course has led me to, [once again](/posts/discovering-the-power-of-gpu-programming/),
+revisit an old project of mine to apply my learnings.
+
+The goal of the project is to make a program that can draw any target image
+using only circles. Of course one can do that with a greedy algorithm
+and a large number of circles (even as extreme as having one circle per pixel!).
+However, in my opinion, the "better" solution would try to replicate the image with
+as few circles as needed to ultimately produce novel and artistic results.
+
+The old solution, used a hill-climbing algorithm to randomly change
+circle parameters over hundreds of thousands of iterations. The new
+approach uses gradient descent through backpropagation, a smarter ML
+technique that converges after only a few hundred iterations (aka epochs).
+
+I plan on writing a more detailed article about the new solution, but for now,
+I will leave you with those two pictures as an amuse-bouche:
+
+## Gradient Descent
+
+<SubbedImage
+   src={monalisa} alt="Mona Lisa Drawn With Circles" width={1024} height={1024} max_width={384}
+   sub="Mona Lisa drawn using 512 circles after 1 thousand epochs in ~7 minutes"
+/>
+
+
+## Hill Climbing
+
+<SubbedImage
+   src={monalisa_old} alt="Mona Lisa Drawn With Circles" width={1024} height={1024} max_width={384}
+   sub="Mona Lisa drawn using 256 circles after 1 million iterations in ~18 minutes"
+/>
