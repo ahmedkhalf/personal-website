@@ -13,7 +13,7 @@ export async function GET(context: APIContext) {
     items: blog.map((post) => ({
       title: post.data.title,
       pubDate: post.data.date_published,
-      link: `/posts/${createSlug(post.data.title)}/`
+      link: `/posts/${createSlug(post.data.permatitle ?? post.data.title)}/`
     })),
     customData: `<language>en-ca</language>`,
   });
