@@ -3,7 +3,7 @@
 <script>
     const go = new Go();
     WebAssembly.instantiateStreaming(
-        fetch("galaxy/galaxy.wasm"),
+        fetch("/galaxy/galaxy.wasm"),
         go.importObject,
     ).then((result) => {
         go.run(result.instance);
